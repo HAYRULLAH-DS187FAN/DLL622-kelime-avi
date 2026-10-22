@@ -1,0 +1,10 @@
+{
+  "name": "dll622-kelime-avi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DLL622 kanal kimliğine sahip günlük Türkçe kelime tahmin oyunu",
+  "scripts": {
+    "prepare:words": "node scripts/prepare-words.mjs",
+    "build": "node scripts/build.mjs"
+  }
+}

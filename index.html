@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080608" />
+  <meta name="description" content="DLL622 Kelime Avı: her gün 25 Türkçe kelime bulmacası çöz, tahminlerini yap ve kelimeleri yakala." />
+  <title>DLL622 Kelime Avı — Günlük kelime meydan okuması</title>
+  <link rel="icon" type="image/jpeg" href="dll622-logo.jpg" />
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="words.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="DLL622 Kelime Avı ana sayfa">
+        <img class="brand-logo" src="dll622-logo.jpg" alt="DLL622 kanal karakteri" />
+        <span class="brand-copy"><span class="brand-title">DLL622</span><span class="brand-subtitle">KELİME AVI</span></span>
+      </a>
+      <div class="topbar-right">
+        <div class="daily-status">
+          <span class="daily-date" id="daily-date">BUGÜNÜN GÖREVİ</span>
+          <span class="reset-countdown" id="reset-countdown" aria-live="off">YENİ PAKET --:--:--</span>
+        </div>
+        <button class="icon-button" id="help-button" aria-label="Nasıl oynanır?" title="Nasıl oynanır?">?</button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> DLL622 OYUN EVRENİ</p>
+        <h1>Kelimeleri avla.<br /><span>Günün meydan okuması başladı.</span></h1>
+        <p class="intro-copy">Her harf uzunluğunda 5 bulmaca. Türkçe harflerini konuştur, kelimeleri yakala ve günlük 25 görevi tamamla.</p>
+        <div class="hero-tags" aria-label="Oyun özellikleri"><span>⚡ GÜNLÜK GÖREV</span><span>◆ TÜRKÇE KELİMELER</span><span>★ DLL622</span></div>
+      </section>
+
+      <section id="demo-warning" class="notice" hidden>
+        <span class="notice-icon">i</span>
+        <div><strong>Test kelime havuzu açık.</strong><br />Tam oyun için proje klasöründe <code>node scripts/prepare-words.mjs</code> komutunu çalıştır. Ayrıntılar README dosyasında.</div>
+      </section>
+
+      <section class="category-panel" aria-labelledby="category-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">HEDEFİNİ BELİRLE</p>
+            <h2 id="category-heading">Kaç harfli kelime avlayacaksın?</h2>
+          </div>
+          <div class="daily-total"><strong id="total-completed">0</strong><span>/25 bugün</span></div>
+        </div>
+        <div class="category-grid" id="category-grid" role="group" aria-label="Kelime uzunluğu">
+          <button class="category-card active" data-length="4"><span class="category-number">04</span><span class="category-label">harf</span><span class="category-progress">0/5 tamam</span></button>
+          <button class="category-card" data-length="5"><span class="category-number">05</span><span class="category-label">harf</span><span class="category-progress">0/5 tamam</span></button>
+          <button class="category-card" data-length="6"><span class="category-number">06</span><span class="category-label">harf</span><span class="category-progress">0/5 tamam</span></button>
+          <button class="category-card" data-length="7"><span class="category-number">07</span><span class="category-label">harf</span><span class="category-progress">0/5 tamam</span></button>
+          <button class="category-card" data-length="8"><span class="category-number">08</span><span class="category-label">harf</span><span class="category-progress">0/5 tamam</span></button>
+        </div>
+      </section>
+
+      <section class="game-panel" aria-labelledby="game-heading">
+        <div class="game-topline">
+          <div>
+            <p class="eyebrow" id="round-label">4 HARFLİ KELİME · 1. BULMACA</p>
+            <h2 id="game-heading">Kelimeyi yakala</h2>
+          </div>
+          <div class="attempt-counter"><span id="attempt-count">0</span><span>/6 tahmin</span></div>
+        </div>
+
+        <div class="board-wrap">
+          <div id="board" class="board" aria-label="Kelime tahmin tahtası"></div>
+        </div>
+        <p id="game-message" class="game-message" role="status" aria-live="polite">Bir kelime yaz ve Enter'a bas.</p>
+        <div id="next-area" class="next-area" hidden>
+          <button id="next-button" class="primary-button">Sonraki kelime <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="keyboard-hint">Klavye de ipucu verir: <strong>gri</strong> harfler kelimede yok, <strong>sarı</strong> harfler başka yerde, <strong>yeşil</strong> harfler doğru yerde.</p>
+        <div id="keyboard" class="keyboard" aria-label="Türkçe ekran klavyesi"></div>
+      </section>
+
+      <section class="rules-strip" aria-label="Renklerin anlamı">
+        <div class="rule"><span class="rule-tile correct">A</span><div><strong>Doğru yer</strong><span>Harf kelimede ve yeri doğru.</span></div></div>
+        <div class="rule"><span class="rule-tile present">R</span><div><strong>Başka yerde</strong><span>Harf kelimede var ama yeri yanlış.</span></div></div>
+        <div class="rule"><span class="rule-tile absent">S</span><div><strong>Kelimede yok</strong><span>Bu harf kelimede bulunmuyor.</span></div></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span><strong class="footer-brand">DLL622 KELİME AVI</strong> <span class="footer-separator">·</span> Her gün yeni 25 görev</span>
+      <span class="footer-note">Kelime listesi ve kaynak bilgisi: <a href="ATTRIBUTION.md" target="_blank" rel="noreferrer">Açık veri notu</a></span>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="help-dialog">
+    <form method="dialog">
+      <div class="dialog-top"><p class="eyebrow">DLL622 OYUN REHBERİ</p><button class="icon-button close-button" aria-label="Kapat">×</button></div>
+      <h2>Nasıl oynanır?</h2>
+      <p>Seçtiğin uzunluktaki gizli Türkçe kelimeyi 6 tahminde bulmaya çalış. Her kategoride günde 5 ayrı kelime var.</p>
+      <div class="help-example"><span class="rule-tile correct">A</span><span class="rule-tile present">R</span><span class="rule-tile absent">S</span></div>
+      <p><strong>Yeşil:</strong> harf doğru yerde. <strong>Sarı:</strong> harf kelimede, yeri yanlış. <strong>Gri:</strong> harf kelimede yok.</p>
+      <p>İ, I, i ve ı Türkçedeki doğru kullanımlarıyla ayrı harflerdir. İlerlemen bu cihazda kaydedilir.</p>
+      <button class="primary-button dialog-done">Anladım</button>
+    </form>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,9 @@
+DLL622 KELIME AVI — TEMA GÜNCELLEMESİ
+
+1. Bu ZIP'in içindeki dosyaları mevcut kelime-arena proje klasörüne çıkar.
+2. index.html ve styles.css dosyalarının üzerine yazılmasına izin ver.
+3. dll622-logo.jpg dosyasının aynı klasörde kaldığından emin ol.
+4. app.js ve words.js dosyalarına dokunma. Böylece oyun kodun ve senin ürettiğin 2.500 hedef kelime / 9.443 tahmin kelimesi korunur.
+5. Tarayıcıda sayfayı Ctrl + F5 ile yenile.
+
+TEMA: logodaki DLL622 karakteri, siyah/koyu bordo zemin ve neon kırmızılar. Yeşil/sarı/gri kutular oyun ipuçları olarak korunur.

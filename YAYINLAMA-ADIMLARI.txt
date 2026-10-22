@@ -1,0 +1,29 @@
+DLL622 KELİME AVI — GITHUB + VERCEL
+
+A) SÖZLÜĞÜ HAZIRLA
+1. Bu klasörü VS Code ile aç.
+2. Terminal > New Terminal.
+3. Sırayla çalıştır:
+   npm.cmd run prepare:words
+   npm.cmd run build
+4. İlk komut tam 2.500 hedef kelime ve uygun tahmin sayısını yazmalı. words.js artık gerçek havuz dosyası olmalı; TEST VERİSİ / isDemo:true yazıyorsa yükleme.
+
+B) BOŞ GITHUB DEPOSUNA YÜKLE
+Bu komutları proje klasöründe sırayla çalıştır:
+   git init
+   git add .
+   git commit -m "DLL622 Kelime Avı ilk sürüm"
+   git branch -M main
+   git remote add origin https://github.com/HAYRULLAH-DS187FAN/DLL622-kelime-avi.git
+   git push -u origin main
+
+C) VERCEL'DE YAYINLA
+1. Vercel > Add New > Project.
+2. DLL622-kelime-avi deposunu import et.
+3. Framework: Other; Install: npm install; Build: npm run build; Output: dist.
+4. Deploy.
+
+NOTLAR
+- GitHub'ın ChatGPT bağlantısı bu oturumda depoyu okuyabiliyor ancak dosya yazma isteği 403 ile reddedildi. Bu yüzden ilk yüklemeyi yerel Git komutlarıyla yapıyoruz.
+- Günlük bulmacalar Europe/Istanbul tarihine göre sabittir ve aynı sözlük sürümünde herkes aynı kelimeleri görür.
+- Tam words.js dosyasını commit et. Build scripti bu dosya tam ise dış kaynağı tekrar indirmez; eksik/demo ise yayınlamayı durdurmak yerine kaynağı indirip hazırlamayı dener ve başarısız olursa derlemeyi hata ile bitirir.
