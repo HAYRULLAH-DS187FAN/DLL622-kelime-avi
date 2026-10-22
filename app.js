@@ -431,5 +431,27 @@
     window.setInterval(() => { updateDayIfNeeded(); updateCountdown(); }, 1_000);
   }
 
-  init();
+  // Kelime verisi ilk açılışta alınamazsa cache-busting parametresiyle yeniden dene.
+  function bootWithWordData(retries = 3) {
+    const data = window.WORD_DATA;
+    if (data?.byLength && Array.isArray(data.allowed)) {
+      init();
+      return;
+    }
+    if (retries <= 0) {
+      setMessage("Kelime listesi yüklenemedi. İnternet bağlantını kontrol edip sayfayı yeniden aç.", "bad");
+      return;
+    }
+    setMessage("Kelime listesi yükleniyor; otomatik olarak yeniden deneniyor…", "");
+    const retryScript = document.createElement("script");
+    retryScript.src = "words.js?retry=" + Date.now() + "-" + retries;
+    retryScript.onload = () => {
+      if (window.WORD_DATA?.byLength && Array.isArray(window.WORD_DATA.allowed)) init();
+      else window.setTimeout(() => bootWithWordData(retries - 1), 300);
+    };
+    retryScript.onerror = () => window.setTimeout(() => bootWithWordData(retries - 1), 500);
+    document.head.appendChild(retryScript);
+  }
+
+  bootWithWordData();
 })();
