@@ -91,19 +91,28 @@
     };
   }
 
-  function shuffledForDay(words, length) {
+  function shuffledForDay(words, length, forDay = day) {
     const unique = Array.from(new Set((words || []).map(lowerTurkish)))
-      .filter(word => word.length === length && Array.from(word).every(ch => LETTERS.has(turkish(ch))));
-    const random = seededRandom(hashString(`${day}|${length}|kelime-arena-v1`));
+      .filter(word => Array.from(word).length === length && Array.from(word).every(ch => LETTERS.has(turkish(ch))));
+    if (unique.length <= DAILY_COUNT) return unique;
+
+    // Her harf uzunluğunun 500 kelimesini sabit, tarih bağımsız sırada karıştır.
+    // Sonra her gün beşli, bitişik bir paket al. Böylece ertesi günün paketi
+    // bir önceki günün kelimelerini içermez ve tüm oyuncular aynı paketi görür.
+    const random = seededRandom(hashString(`dll622-cycle-v2|${length}`));
     for (let i = unique.length - 1; i > 0; i--) {
       const j = Math.floor(random() * (i + 1));
       [unique[i], unique[j]] = [unique[j], unique[i]];
     }
-    return unique.slice(0, DAILY_COUNT);
+
+    const [year, month, date] = forDay.split('-').map(Number);
+    const dayNumber = Math.floor(Date.UTC(year, month - 1, date) / 86400000);
+    const startIndex = ((dayNumber * DAILY_COUNT) % unique.length + unique.length) % unique.length;
+    return Array.from({ length: DAILY_COUNT }, (_, index) => unique[(startIndex + index) % unique.length]);
   }
 
   function getDailyWords(length) {
-    return shuffledForDay(window.WORD_DATA?.byLength?.[length] || [], length);
+    return shuffledForDay(window.WORD_DATA?.byLength?.[length] || [], length, day);
   }
 
   function storageKey(length) {
