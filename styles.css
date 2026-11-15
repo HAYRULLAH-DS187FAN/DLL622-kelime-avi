@@ -70,6 +70,11 @@ h2 { margin: 0; letter-spacing: -.035em; font-size: 21px; }
 .game-message.bad { color: #fca5a5; }
 .next-area { text-align: center; min-height: 43px; margin: 3px 0 10px; }
 .next-area[hidden] { display: none; }
+.reward-area { text-align: center; margin: 0 auto 10px; }
+.reward-area[hidden] { display: none; }
+.reward-button { border: 1px solid #c48b32; padding: 10px 15px; border-radius: 10px; color: #ffe9a8; font-weight: 800; font-size: 12px; background: linear-gradient(135deg, #6d4315, #3b250f); box-shadow: 0 7px 20px #8f5b1e30; cursor: pointer; }
+.reward-button:hover { filter: brightness(1.12); }
+.reward-note { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
 .primary-button { border: 0; padding: 12px 18px; border-radius: 11px; color: white; font-weight: 850; font-size: 13px; background: linear-gradient(135deg, #ff334d, #a80c2b); box-shadow: 0 8px 24px #d5103240; cursor: pointer; }
 .primary-button:hover { filter: brightness(1.1); }
 .primary-button span { margin-left: 7px; }

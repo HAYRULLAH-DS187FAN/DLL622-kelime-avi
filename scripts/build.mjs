@@ -56,7 +56,7 @@ console.log(`DLL622 Kelime Avı: mevcut kelime havuzu kullanılacak (${wordData.
 const output = path.join(root, 'dist');
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
-for (const file of ['index.html', 'styles.css', 'app.js', 'words.js', 'dll622-logo.jpg', 'ATTRIBUTION.md']) {
+for (const file of ['index.html', 'styles.css', 'app.js', 'ads-config.js', 'words.js', 'dll622-logo.jpg', 'ATTRIBUTION.md']) {
   await copyFile(path.join(root, file), path.join(output, file));
 }
 console.log('Dağıtım dosyaları dist/ klasörüne hazırlandı.');

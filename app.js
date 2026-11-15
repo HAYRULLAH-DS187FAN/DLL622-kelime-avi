@@ -24,6 +24,8 @@
   const dateLabel = $("#daily-date");
   const countdownLabel = $("#reset-countdown");
   const helpDialog = $("#help-dialog");
+  const rewardArea = $("#reward-area");
+  const rewardButton = $("#reward-button");
 
   let currentLength = 4;
   let currentRound = 0;
@@ -33,6 +35,9 @@
   let saved = {};
   let allowedWords = new Set();
   let lastMessageTimer = null;
+  let rewardedSlot = null;
+  let rewardedSlotReady = false;
+  let rewardPending = false;
 
   function formatTurkeyDateLabel() {
     return new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", day: "numeric", month: "long", year: "numeric" }).format(new Date()).toLocaleUpperCase("tr-TR");
@@ -119,7 +124,7 @@
     return `${STORAGE_PREFIX}:${day}:${length}`;
   }
 
-  function blankRound() { return { guesses: [], status: "playing" }; }
+  function blankRound() { return { guesses: [], status: "playing", extraGuesses: 0, rewardUsed: false }; }
 
   function readCategory(length) {
     try {
@@ -128,9 +133,9 @@
       const rounds = Array.from({ length: DAILY_COUNT }, (_, index) => {
         const item = parsed.rounds[index];
         if (!item || !Array.isArray(item.guesses)) return blankRound();
-        const guesses = item.guesses.filter(guess => typeof guess === "string" && guess.length === length).slice(0, MAX_GUESSES);
+        const guesses = item.guesses.filter(guess => typeof guess === "string" && Array.from(guess).length === length).slice(0, MAX_GUESSES + 1);
         const status = ["playing", "won", "lost"].includes(item.status) ? item.status : "playing";
-        return { guesses, status };
+        return { guesses, status, extraGuesses: Math.max(0, Math.min(1, Number(item.extraGuesses) || 0)), rewardUsed: item.rewardUsed === true };
       });
       let next = Math.max(0, Math.min(DAILY_COUNT - 1, Number(parsed.currentRound) || 0));
       while (next < DAILY_COUNT - 1 && rounds[next].status !== "playing") next++;
@@ -213,12 +218,14 @@
     else if (allDailyCompleted(length)) setMessage("Bu kategorinin bugünkü 5 kelimesini tamamladın. Yarın yeni paket!", "good");
     else setMessage(state.guesses.length ? "Devam et; kalan tahminlerini kullan." : "Bir kelime yaz ve Enter'a bas.", "");
     updateCounters();
+    updateRewardAction();
   }
 
   function renderBoard() {
     board.innerHTML = "";
     board.style.setProperty("--cols", String(currentLength));
-    for (let row = 0; row < MAX_GUESSES; row++) {
+    const guessLimit = MAX_GUESSES + (state?.extraGuesses || 0);
+    for (let row = 0; row < guessLimit; row++) {
       const guess = state?.guesses?.[row] || "";
       const evaluated = guess ? evaluateGuess(guess, target) : [];
       for (let col = 0; col < currentLength; col++) {
@@ -348,6 +355,71 @@
     if (lastMessageTimer) clearTimeout(lastMessageTimer);
   }
 
+  function updateRewardAction() {
+    if (!rewardArea) return;
+    rewardArea.hidden = !(rewardedSlotReady && state?.status === "lost" && !state.rewardUsed);
+  }
+
+  function grantExtraGuess() {
+    if (!state || state.status !== "lost" || state.rewardUsed) return;
+    state.status = "playing";
+    state.extraGuesses = 1;
+    state.rewardUsed = true;
+    saved[currentLength].rounds[currentRound] = {
+      guesses: state.guesses.slice(), status: state.status,
+      extraGuesses: state.extraGuesses, rewardUsed: state.rewardUsed
+    };
+    saved[currentLength].currentRound = currentRound;
+    saveCategory();
+    renderBoard();
+    renderKeyboard();
+    nextArea.hidden = true;
+    setMessage("Reklam tamamlandı. Bir ek tahmin hakkın var; devam et!", "good");
+    updateRewardAction();
+  }
+
+  function initRewardedAds() {
+    const config = window.DLL622_AD_CONFIG;
+    if (!config?.enabled || !config.adUnitPath || !rewardButton) return;
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://securepubads.g.doubleclick.net/tag/js/gpt.js";
+    script.onload = () => {
+      window.googletag = window.googletag || { cmd: [] };
+      window.googletag.cmd.push(() => {
+        const slot = window.googletag.defineOutOfPageSlot(config.adUnitPath, window.googletag.enums.OutOfPageFormat.REWARDED);
+        if (!slot) return;
+        rewardedSlot = slot;
+        slot.addService(window.googletag.pubads());
+        window.googletag.pubads().addEventListener("rewardedSlotReady", event => {
+          if (event.slot !== rewardedSlot) return;
+          rewardedSlotReady = true;
+          updateRewardAction();
+        });
+        window.googletag.pubads().addEventListener("rewardedSlotGranted", event => {
+          if (event.slot !== rewardedSlot || !rewardPending) return;
+          rewardPending = false;
+          grantExtraGuess();
+        });
+        window.googletag.pubads().addEventListener("rewardedSlotClosed", event => {
+          if (event.slot !== rewardedSlot) return;
+          rewardPending = false;
+          if (!state?.rewardUsed) setMessage("Reklam tamamlanmadı; ek tahmin verilmedi.", "bad");
+          updateRewardAction();
+        });
+        window.googletag.enableServices();
+        window.googletag.display(rewardedSlot);
+      });
+    };
+    script.onerror = () => setMessage("Ödüllü reklam şu anda yüklenemedi. Oyuna reklamsız devam edebilirsin.", "bad");
+    document.head.appendChild(script);
+    rewardButton.addEventListener("click", () => {
+      if (!rewardedSlot || !rewardedSlotReady || rewardPending) return;
+      rewardPending = true;
+      window.googletag.cmd.push(() => window.googletag.display(rewardedSlot));
+    });
+  }
+
   function submitGuess() {
     if (!target || state.status !== "playing") return;
     const guess = lowerTurkish(currentDraft());
@@ -367,8 +439,11 @@
     state.draft = "";
     const won = guess === target;
     if (won) state.status = "won";
-    else if (state.guesses.length >= MAX_GUESSES) state.status = "lost";
-    saved[currentLength].rounds[currentRound] = { guesses: state.guesses.slice(), status: state.status };
+    else if (state.guesses.length >= MAX_GUESSES + (state.extraGuesses || 0)) state.status = "lost";
+    saved[currentLength].rounds[currentRound] = {
+      guesses: state.guesses.slice(), status: state.status,
+      extraGuesses: state.extraGuesses || 0, rewardUsed: state.rewardUsed === true
+    };
     saved[currentLength].currentRound = currentRound;
     saveCategory();
     renderBoard();
@@ -387,6 +462,7 @@
       nextArea.hidden = true;
     }
     updateCounters();
+    updateRewardAction();
   }
 
   function goNext() {
@@ -431,6 +507,7 @@
     allowedWords = new Set(allAllowed.map(lowerTurkish));
     $$(".category-card").forEach(card => card.addEventListener("click", () => startCategory(Number(card.dataset.length))));
     nextButton.addEventListener("click", goNext);
+    initRewardedAds();
     $("#help-button").addEventListener("click", () => helpDialog.showModal());
     helpDialog.addEventListener("click", event => { if (event.target === helpDialog) helpDialog.close(); });
     document.addEventListener("keydown", handlePhysicalKey);

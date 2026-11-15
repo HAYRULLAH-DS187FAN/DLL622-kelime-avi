@@ -9,6 +9,7 @@
   <link rel="icon" type="image/jpeg" href="dll622-logo.jpg" />
   <link rel="stylesheet" href="styles.css?v=1792696297794" />
   <script defer src="words.js?v=1792696297794"></script>
+  <script defer src="ads-config.js?v=1792696297794"></script>
   <script defer src="app.js?v=1792696297794"></script>
 </head>
 <body>
@@ -72,6 +73,10 @@
         <p id="game-message" class="game-message" role="status" aria-live="polite">Bir kelime yaz ve Enter'a bas.</p>
         <div id="next-area" class="next-area" hidden>
           <button id="next-button" class="primary-button">Sonraki kelime <span aria-hidden="true">→</span></button>
+        </div>
+        <div id="reward-area" class="reward-area" hidden>
+          <button id="reward-button" class="reward-button" type="button">Reklam izle, 1 ek tahmin kazan</button>
+          <p class="reward-note">İsteğe bağlıdır. Reklam tamamlanınca bu bulmacaya bir tahmin hakkı eklenir.</p>
         </div>
         <p class="keyboard-hint">Klavye de ipucu verir: <strong>gri</strong> harfler kelimede yok, <strong>sarı</strong> harfler başka yerde, <strong>yeşil</strong> harfler doğru yerde.</p>
         <div id="keyboard" class="keyboard" aria-label="Türkçe ekran klavyesi"></div>

@@ -48,6 +48,12 @@ GitHub deposunu Vercel'de `Add New → Project → Import Git Repository` üzeri
 
 Ayarlar `vercel.json` içinde de kayıtlıdır.
 
+## Ödüllü reklam kurulumu
+
+Oyunda reklamı isteğe bağlı bir akış olarak kullanmak için Google Ad Manager'da bir **Rewarded web ad unit** oluşturun. `ads-config.js` içindeki `enabled` değerini `true` yapıp `adUnitPath` alanına oluşturduğunuz ad unit path'ini yazın; örnek biçim `/123456789/dll622/rewarded` şeklindedir. Reklam tamamlanınca oyun, yalnızca Google'ın `rewardedSlotGranted` olayı geldiğinde bir ek tahmin hakkı verir. Reklam yarıda kapatılırsa ödül verilmez.
+
+Google'ın web rewarded reklam koşullarında kullanıcıdan açıkça reklamı izleme tercihi alınması ve ödülün yayıncı tarafından teslim edilmesi gerekir. Reklam hesabınızdaki onay/consent ayarlarını ve ödüllü reklam politikalarını tamamlamadan `enabled: true` yapmayın. Teknik örnek ve güncel şartlar için [Google Publisher Tag rewarded ad örneğine](https://developers.google.com/publisher-tag/samples/display-rewarded-ad) ve [Google Ad Manager web rewarded reklam rehberine](https://support.google.com/admanager/answer/9116812) bakın.
+
 ## Kelime kaynağı ve lisans
 
 Kaynak ve atıf ayrıntıları `ATTRIBUTION.md` dosyasındadır. Yayın öncesi bu dosyayı da dağıtımda tut.
