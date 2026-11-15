@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dll622wordle.vercel.app/sitemap.xml
